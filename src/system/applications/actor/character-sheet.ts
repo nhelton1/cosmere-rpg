@@ -8,6 +8,10 @@ import { SYSTEM_ID } from '@src/system/constants';
 import { BaseActorSheet } from './base';
 import { TEMPLATES } from '@src/system/utils/templates';
 
+//Svelte
+import { getCharacterHeaderProps } from '@src/system/ui/adapters/character-header';
+import CharacterHeader from '../../ui/character/CharacterHeader.svelte';
+
 const enum CharacterSheetTab {
     Details = 'details',
     Goals = 'goals',
@@ -15,6 +19,7 @@ const enum CharacterSheetTab {
 
 export class CharacterSheet extends BaseActorSheet {
     declare actor: CharacterActor;
+    private _headerComponent?: any;
 
     static DEFAULT_OPTIONS = {
         classes: [SYSTEM_ID, 'sheet', 'actor', 'character'] as string[],
@@ -82,5 +87,31 @@ export class CharacterSheet extends BaseActorSheet {
                 ancestryItem?.name ??
                 game.i18n?.localize('COSMERE.Item.Type.Ancestry.label'),
         };
+    }
+
+    protected override async _onRender(context: any, options: any) {
+        await super._onRender(context, options);
+
+        if (!options.parts?.includes('header')) return;
+
+        const root = (this as any).element.querySelector('.svelte-header-root');
+        if (!root) return;
+
+        this._headerComponent?.$destroy();
+
+        this._headerComponent = new CharacterHeader({
+            target: root as HTMLElement,
+            props: getCharacterHeaderProps(
+                this.actor,
+                this.mode === 'edit' && this.isEditable,
+                async (value: string) => {
+                    await this.actor.update({ name: value });
+                },
+                async (value: number) => {
+                    await this.actor.update({ 'system.level': value } as any);
+                },
+            ),
+        });
+
     }
 }

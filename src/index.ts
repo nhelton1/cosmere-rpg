@@ -30,6 +30,8 @@ import Editor from './system/ui/editor';
 import CosmereAPI from './system/api';
 import CosmereUtils from './system/utils/global';
 
+import CharacterHeader from './system/ui/character/CharacterHeader.svelte';
+
 declare global {
     namespace CONFIG {
         namespace Canvas {
