@@ -10,7 +10,9 @@ import { TEMPLATES } from '@src/system/utils/templates';
 
 //Svelte
 import { getCharacterHeaderProps } from '@src/system/ui/adapters/character-header';
+import { getCharacterGoalsTabProps } from '@src/system/ui/adapters/character-goals-tab';
 import CharacterHeader from '../../ui/character/CharacterHeader.svelte';
+import CharacterGoalsTab from '../../ui/character/CharacterGoalsTab.svelte';
 
 const enum CharacterSheetTab {
     Details = 'details',
@@ -20,6 +22,7 @@ const enum CharacterSheetTab {
 export class CharacterSheet extends BaseActorSheet {
     declare actor: CharacterActor;
     private _headerComponent?: any;
+    private _goalsComponent?: any;
 
     static DEFAULT_OPTIONS = {
         classes: [SYSTEM_ID, 'sheet', 'actor', 'character'] as string[],
@@ -113,5 +116,27 @@ export class CharacterSheet extends BaseActorSheet {
             ),
         });
 
+        const goalsRoot = (this as any).element.querySelector('.svelte-goals-root');
+
+        if (goalsRoot) {
+            this._goalsComponent?.$destroy();
+
+            const goalsTabCssClass = context.tabsMap?.goals?.cssClass ?? '';
+
+            this._goalsComponent = new CharacterGoalsTab({
+                target: goalsRoot as HTMLElement,
+                props: getCharacterGoalsTabProps(
+                    this.actor,
+                    goalsTabCssClass,
+                    this.mode === 'edit' && this.isEditable,
+                    async (value: string) => {
+                        await this.actor.update({ 'system.purpose': value } as any);
+                    },
+                    async (value: string) => {
+                        await this.actor.update({ 'system.obstacle': value } as any);
+                    },
+                ),
+            });
+        }
     }
 }
