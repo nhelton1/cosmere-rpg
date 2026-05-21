@@ -4,35 +4,41 @@ import { EmptyObject } from '@system/types/utils';
 
 // Mixins
 import { DataModelMixin } from '../mixins';
-import { TypedItemMixin, TypedItemDataSchema, TypedItemDerivedData } from './mixins/typed';
+import {
+    TypedItemMixin,
+    TypedItemDataSchema,
+    TypedItemDerivedData,
+} from './mixins/typed';
 import {
     DescriptionItemMixin,
     DescriptionItemDataSchema,
 } from './mixins/description';
-import { PhysicalItemMixin, PhysicalItemDataSchema, PhysicalItemDerivedData } from './mixins/physical';
+import { ResourcesItemMixin } from './mixins/resources';
 import {
-    ActivatableItemMixin,
-    ActivatableItemDataSchema,
-} from './mixins/activatable';
-import { DamagingItemMixin, DamagingItemDataSchema } from './mixins/damaging';
+    PhysicalItemMixin,
+    PhysicalItemDataSchema,
+    PhysicalItemDerivedData,
+} from './mixins/physical';
 import { EventsItemMixin, EventsItemDataSchema } from './mixins/events';
 import {
     RelationshipsMixin,
     RelationshipsItemDataSchema,
 } from './mixins/relationships';
+import {
+    EquippableItemMixin,
+    EquippableItemDataSchema,
+} from './mixins/equippable';
 
-export type EquipmentItemDataSchema = 
-    & TypedItemDataSchema<EquipmentType>
-    & DescriptionItemDataSchema
-    & PhysicalItemDataSchema
-    & ActivatableItemDataSchema
-    & DamagingItemDataSchema
-    & EventsItemDataSchema
-    & RelationshipsItemDataSchema;
+export type EquipmentItemDataSchema = TypedItemDataSchema<EquipmentType> &
+    DescriptionItemDataSchema &
+    ResourcesItemMixin.Schema &
+    PhysicalItemDataSchema &
+    EventsItemDataSchema &
+    RelationshipsItemDataSchema &
+    EquippableItemDataSchema;
 
-export type EquipmentItemDerivedData = 
-    & TypedItemDerivedData 
-    & PhysicalItemDerivedData;
+export type EquipmentItemDerivedData = TypedItemDerivedData &
+    PhysicalItemDerivedData;
 
 export class EquipmentItemDataModel extends DataModelMixin<
     EquipmentItemDataSchema,
@@ -54,9 +60,9 @@ export class EquipmentItemDataModel extends DataModelMixin<
     DescriptionItemMixin({
         value: 'COSMERE.Item.Type.Equipment.desc_placeholder',
     }),
+    ResourcesItemMixin(),
     PhysicalItemMixin(),
-    ActivatableItemMixin(),
-    DamagingItemMixin(),
     EventsItemMixin(),
     RelationshipsMixin(),
+    EquippableItemMixin(),
 ) {}

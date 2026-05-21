@@ -16,6 +16,7 @@ import CharacterGoalsTab from '../../ui/character/CharacterGoalsTab.svelte';
 
 const enum CharacterSheetTab {
     Details = 'details',
+    Talents = 'talents',
     Goals = 'goals',
 }
 
@@ -51,6 +52,12 @@ export class CharacterSheet extends BaseActorSheet {
                 label: 'COSMERE.Actor.Sheet.Tabs.Details',
                 icon: '<i class="fa-solid fa-feather-pointed"></i>',
                 sortIndex: 0,
+            },
+
+            [CharacterSheetTab.Talents]: {
+                label: 'COSMERE.Actor.Sheet.Tabs.Talents',
+                icon: '<i class="fa-solid fa-book"></i>',
+                sortIndex: 1,
             },
 
             [CharacterSheetTab.Goals]: {

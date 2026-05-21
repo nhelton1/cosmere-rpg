@@ -181,6 +181,13 @@
                     "MiscSectionName": "Miscellaneous Actions",
                     "NewItem": "Add {type}"
                 },
+                "Talents": {
+                    "label": "Talents",
+                    "Use": "Use Talent",
+                    "BaseSectionName": "{type} Talents",
+                    "MiscSectionName": "Miscellaneous Talents",
+                    "NewItem": "Add {type}"
+                },
                 "Equipment": {
                     "Quantity": "Quantity",
                     "Weight": "Weight",
@@ -241,6 +248,7 @@
                 "ImmuneTo": "Immune to {condition}",
                 "Tabs": {
                     "Details": "Details",
+                    "Talents": "Talents",
                     "Actions": "Actions",
                     "Equipment": "Equipment",
                     "Goals": "Goals",
@@ -248,15 +256,7 @@
                     "Effects": "Effects & Conditions"
                 },
                 "Search": {
-                    "Item": {
-                        "Placeholder": "Search actions"
-                    },
-                    "Equipment": {
-                        "Placeholder": "Search items"
-                    },
-                    "Effects": {
-                        "Placeholder": "Search effects"
-                    },
+                    "Placeholder": "Search {type}",
                     "Clear": "Clear Filters",
                     "Filter": "Filter By",
                     "SortManually": "Sort Manually",
@@ -518,7 +518,8 @@
                         "level": "Level",
                         "ancestry": "Ancestry",
                         "culture": "Culture",
-                        "goal": "Goal"
+                        "goal": "Goal",
+                        "power": "Power"
                     },
                     "Mode": {
                         "AnyOf": "Any of",
@@ -532,6 +533,9 @@
                     },
                     "Culture": {
                         "Label": "Culture"
+                    },
+                    "Power": {
+                        "Label": "Power"
                     }
                 },
                 "GrantRule": {
@@ -645,6 +649,9 @@
                     },
                     "Item": {
                         "Label": "Item"
+                    },
+                    "ItemResource": {
+                        "Label": "Item Resource"
                     }
                 },
                 "Uses": {
@@ -686,6 +693,9 @@
                     },
                     "Hold": {
                         "Label": "Held"
+                    },
+                    "Equip": {
+                        "Label": "Equipped"
                     }
                 },
                 "Hold": {
@@ -1057,7 +1067,8 @@
                     "Effects": "Effects",
                     "Details": "Details",
                     "Talents": "Talents",
-                    "Events": "Events"
+                    "Events": "Events",
+                    "Actions": "Actions"
                 },
                 "Identifier": {
                     "Label": "Identifier",
@@ -1105,6 +1116,8 @@
                 },
                 "Equip": {
                     "Title": "Equipment Details",
+                    "IsEquippable": "Is Equippable",
+                    "EquipType": "Equip Type",
                     "AlwaysEquipped": "Always Equipped",
                     "Traits": "Traits",
                     "ExpertTraits": "Expert Traits",
@@ -1203,6 +1216,18 @@
                     "Trigger": "Trigger",
                     "Handler": "Handler",
                     "Create": "Add event rule"
+                },
+                "ActionsList": {
+                    "Description": "Description",
+                    "Action": "Action",
+                    "Cost": "Cost",
+                    "Uses": "Uses",
+                    "Create": "Add Action",
+                    "Edit": "Edit",
+                    "Delete": "Remove",
+                    "NewAction": {
+                        "Name": "New Action"
+                    }
                 }
             },
             "General": {
@@ -1373,6 +1398,23 @@
         },
         "Migration": {
             "DocumentMigrationFailed": "Failed to migrate {type} \"{name}\". {error}"
+        },
+        "Macro": {
+            "Talents": {
+                "Erudition": {
+                    "Dialog": {
+                        "Title": "{actor}: Erudition",
+                        "Skills": "Skills",
+                        "Expertises": "Expertises",
+                        "Expertise": "Expertise",
+                        "Warn": {
+                            "UniqueSkills": "Cannot select the same skill multiple times.",
+                            "UniqueExpertises": "Cannot select the same expertise multiple times."
+                        },
+                        "Confirm": "Confirm"
+                    }
+                }
+            }
         }
     },
     "DICE": {
