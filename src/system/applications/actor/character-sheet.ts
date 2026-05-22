@@ -1,7 +1,7 @@
 import './components';
 
 import { ItemType } from '@system/types/cosmere';
-import { CharacterActor } from '@system/documents';
+import type { CharacterActor } from '@system/documents';
 import { SYSTEM_ID } from '@src/system/constants';
 
 // Base

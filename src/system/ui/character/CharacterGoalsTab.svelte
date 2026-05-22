@@ -1,4 +1,5 @@
 <script lang="ts">
+    import ChildTest from "./ChildTest.svelte";
     export let tabCssClass: string = '';
     export let isEditMode: boolean = false;
 
@@ -48,7 +49,7 @@
                 on:blur={savePurpose}
             ></textarea>
         </div>
-
+        <ChildTest />
         <!-- TODO: replace {{app-character-goals-list}} -->
     </section>
 

@@ -1,4 +1,4 @@
-import { CharacterActor } from '@system/documents';
+import type { CharacterActor } from '@system/documents';
 
 export function getCharacterHeaderProps(
     actor: CharacterActor,
