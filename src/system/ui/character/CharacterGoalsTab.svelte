@@ -1,28 +1,34 @@
 <script lang="ts">
-    import ChildTest from "./ChildTest.svelte";
+    import { localize } from '../../utils/i18n';
+    import type { GoalDisplay } from '../utils/types'
+    import CharacterGoalsList from './CharacterGoalsList.svelte';
+
     export let tabCssClass: string = '';
     export let isEditMode: boolean = false;
-
-    export let purposeLabel: string = 'Purpose';
-    export let obstacleLabel: string = 'Obstacle';
-
     export let purpose: string = '';
     export let obstacle: string = '';
-
+    export let goals: GoalDisplay[] = [];
+    export let hideCompletedGoals: boolean = false;
     export let onPurposeChange: (value: string) => void = () => {};
     export let onObstacleChange: (value: string) => void = () => {};
+    export let onAdjustGoalProgress: (
+        goalId: string,
+        direction: 'increase' | 'decrease',
+    ) => void = () => {};
+    export let onAddGoal: () => void = () => {};
+    export let onToggleHideCompletedGoals: () => void = () => {};
 
     let localPurpose = purpose;
     let localObstacle = obstacle;
 
-    function savePurpose(){
-        if(localPurpose !== purpose){
+    function savePurpose() {
+        if (localPurpose !== purpose) {
             onPurposeChange(localPurpose);
         }
     }
 
-    function saveObstacle(){
-        if(localPurpose !== purpose){
+    function saveObstacle() {
+        if (localObstacle !== obstacle) {
             onObstacleChange(localObstacle);
         }
     }
@@ -38,7 +44,7 @@
             <div class="icon-header">
                 <div class="title">
                     <i class="fa-solid fa-seedling"></i>
-                    <span>{purposeLabel}</span>
+                    <span>{localize('COSMERE.Actor.Sheet.Details.Purpose')}</span>
                 </div>
             </div>
 
@@ -49,8 +55,16 @@
                 on:blur={savePurpose}
             ></textarea>
         </div>
-        <ChildTest />
-        <!-- TODO: replace {{app-character-goals-list}} -->
+        
+        <CharacterGoalsList
+            {goals}
+            editable={isEditMode}
+            {hideCompletedGoals}
+            {onAddGoal}
+            {onToggleHideCompletedGoals}
+            {onAdjustGoalProgress}
+        />
+
     </section>
 
     <section>
@@ -58,7 +72,7 @@
             <div class="icon-header">
                 <div class="title">
                     <i class="fa-solid fa-heart-crack"></i>
-                    <span>{obstacleLabel}</span>
+                    <span>{localize('COSMERE.Actor.Sheet.Details.Obstacle')}</span>                
                 </div>
             </div>
 
@@ -70,6 +84,6 @@
             ></textarea>
         </div>
 
-        <!-- TODO: replace {{app-character-connections-list}} -->
+        <!-- Connections list migration comes next -->
     </section>
 </div>

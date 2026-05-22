@@ -8,11 +8,12 @@ import { SYSTEM_ID } from '@src/system/constants';
 import { BaseActorSheet } from './base';
 import { TEMPLATES } from '@src/system/utils/templates';
 
-//Svelte
-import { getCharacterHeaderProps } from '@src/system/ui/adapters/character-header';
-import { getCharacterGoalsTabProps } from '@src/system/ui/adapters/character-goals-tab';
+// Svelte
 import CharacterHeader from '../../ui/character/CharacterHeader.svelte';
 import CharacterGoalsTab from '../../ui/character/CharacterGoalsTab.svelte';
+import { getCharacterHeaderProps } from '../../ui/adapters/character-header';
+import { getCharacterGoalsTabProps } from '../../ui/adapters/character-goals-tab';
+import { mountSvelteComponent } from '../../ui/utils/mount-svelte.ts'
 
 const enum CharacterSheetTab {
     Details = 'details',
@@ -102,16 +103,18 @@ export class CharacterSheet extends BaseActorSheet {
     protected override async _onRender(context: any, options: any) {
         await super._onRender(context, options);
 
-        if (!options.parts?.includes('header')) return;
+        if (!options.parts?.includes('header')) { return; }
 
-        const root = (this as any).element.querySelector('.svelte-header-root');
-        if (!root) return;
+        const element = (this as any).element as HTMLElement;
+        const headerRoot = element.querySelector('.svelte-header-root');
 
-        this._headerComponent?.$destroy();
+        if (!headerRoot) { return; }
 
-        this._headerComponent = new CharacterHeader({
-            target: root as HTMLElement,
-            props: getCharacterHeaderProps(
+        this._headerComponent = mountSvelteComponent(
+            this._headerComponent,
+            CharacterHeader,
+            headerRoot as HTMLElement,
+            getCharacterHeaderProps(
                 this.actor,
                 this.mode === 'edit' && this.isEditable,
                 async (value: string) => {
@@ -121,20 +124,26 @@ export class CharacterSheet extends BaseActorSheet {
                     await this.actor.update({ 'system.level': value } as any);
                 },
             ),
+        );
+
+        const goalsRoot = element.querySelector('.svelte-goals-root');
+
+        console.log('Goals mount check', {
+            goalsRoot: !!element.querySelector('.svelte-goals-root'),
+            goalsTab: context.tabsMap?.goals,
+            parts: options.parts,
         });
 
-        const goalsRoot = (this as any).element.querySelector('.svelte-goals-root');
-
         if (goalsRoot) {
-            this._goalsComponent?.$destroy();
+            const goalsTab = context.tabsMap?.goals;
 
-            const goalsTabCssClass = context.tabsMap?.goals?.cssClass ?? '';
-
-            this._goalsComponent = new CharacterGoalsTab({
-                target: goalsRoot as HTMLElement,
-                props: getCharacterGoalsTabProps(
+            this._goalsComponent = mountSvelteComponent(
+                this._goalsComponent,
+                CharacterGoalsTab,
+                goalsRoot as HTMLElement,
+                getCharacterGoalsTabProps(
                     this.actor,
-                    goalsTabCssClass,
+                    goalsTab.cssClass ?? '',
                     this.mode === 'edit' && this.isEditable,
                     async (value: string) => {
                         await this.actor.update({ 'system.purpose': value } as any);
@@ -142,8 +151,35 @@ export class CharacterSheet extends BaseActorSheet {
                     async (value: string) => {
                         await this.actor.update({ 'system.obstacle': value } as any);
                     },
+                    async (
+                        goalId: string,
+                        direction: 'increase' | 'decrease',
+                    ) => {
+                        const goal = this.actor.items.get(goalId);
+                        if (!goal?.isGoal()) return;
+                        const newLevel = 
+                            direction === 'increase' 
+                            ? Math.min(goal.system.level + 1, 3) 
+                            : Math.max(goal.system.level - 1, 0);
+                        await goal.update({ 'system.level': newLevel } as any);
+                    },
+                    async () => {
+                        const goal = await Item.create(
+                            {
+                                type: ItemType.Goal,
+                                name: game.i18n.localize('COSMERE.Actor.Sheet.Details.Goals.New'),
+                                system: { level: 0 },
+                            },
+                            { parent: this.actor },
+                        );
+                        goal?.sheet?.render(true);
+                    },
+                    async () => {
+                        const current = this.actor.getFlag( SYSTEM_ID, 'goals.hide-completed') ?? false;
+                        await this.actor.setFlag( SYSTEM_ID, 'goals.hide-completed', !current );
+                    },
                 ),
-            });
+            );
         }
     }
 }
