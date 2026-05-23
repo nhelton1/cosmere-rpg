@@ -2,7 +2,7 @@
 
 import { SYSTEM_ID } from '@src/system/constants';
 import type { CharacterActor } from '@system/documents';
-import type { GoalDisplay } from '@src/system/ui/character/CharacterGoalsList.svelte';
+import type { GoalDisplay } from '../utils/types'
 
 export function getCharacterGoalsTabProps(
     actor: CharacterActor,

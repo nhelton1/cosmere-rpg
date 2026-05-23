@@ -13,7 +13,7 @@ import CharacterHeader from '../../ui/character/CharacterHeader.svelte';
 import CharacterGoalsTab from '../../ui/character/CharacterGoalsTab.svelte';
 import { getCharacterHeaderProps } from '../../ui/adapters/character-header';
 import { getCharacterGoalsTabProps } from '../../ui/adapters/character-goals-tab';
-import { mountSvelteComponent } from '../../ui/utils/mount-svelte.ts'
+import { mountSvelteComponent } from '../../ui/utils/mount-svelte'
 
 const enum CharacterSheetTab {
     Details = 'details',
@@ -144,7 +144,7 @@ export class CharacterSheet extends BaseActorSheet {
                 getCharacterGoalsTabProps(
                     this.actor,
                     goalsTab.cssClass ?? '',
-                    this.mode === 'edit' && this.isEditable,
+                    this.isEditable,
                     async (value: string) => {
                         await this.actor.update({ 'system.purpose': value } as any);
                     },

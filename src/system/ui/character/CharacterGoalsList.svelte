@@ -26,7 +26,7 @@
         onAdjustGoalProgress(goalId, direction);
     }
 </script>
-<div class="CharacterGoalsList">
+
 <ul class="item-list bullet-list">
     <li class="item header">
         <section class="details">
@@ -115,4 +115,3 @@
         </button>
     </div>
 {/if}
-</div>
