@@ -17,6 +17,7 @@ const enum CharacterSheetTab {
 export class CharacterSheet extends BaseActorSheet {
     declare actor: CharacterActor;
 
+    private static readonly MIN_MARGIN = 40;
     private static readonly MIN_WIDTH = 800;
     private static readonly MAX_WIDTH = 800;
     private static readonly MIN_HEIGHT = 728;
@@ -30,12 +31,11 @@ export class CharacterSheet extends BaseActorSheet {
             positioned: true,
             resizable: true,
         },
+        //By default, we want our ideal sheet size with our max height/width
+        // BUT we need to be within the viewport no matter what. Otherwise users can't use certain functions
         position: {
-            width: CharacterSheet.MIN_WIDTH,
-            height: Math.max(
-                Math.min(CharacterSheet.MAX_HEIGHT, window.innerHeight),
-                CharacterSheet.MIN_HEIGHT,
-            ),
+            width: Math.min(window.innerWidth - CharacterSheet.MIN_MARGIN, CharacterSheet.MAX_WIDTH),
+            height: Math.min(window.innerHeight - CharacterSheet.MIN_MARGIN, CharacterSheet.MAX_HEIGHT),
         },
     };
 
@@ -115,13 +115,16 @@ export class CharacterSheet extends BaseActorSheet {
         const width = this.position.width as number;
         const height = this.position.height as number;
 
+        const curMaxWidth = Math.min(CharacterSheet.MAX_WIDTH, window.innerWidth - CharacterSheet.MIN_MARGIN);
+        const curMaxHeight = Math.min(CharacterSheet.MAX_HEIGHT, window.innerHeight - CharacterSheet.MIN_MARGIN);
+
         const clampedWidth = Math.min(
             Math.max(width, CharacterSheet.MIN_WIDTH),
-            CharacterSheet.MAX_WIDTH,
+            curMaxWidth
         );
         const clampedHeight = Math.min(
             Math.max(height, CharacterSheet.MIN_HEIGHT),
-            CharacterSheet.MAX_HEIGHT,
+            curMaxHeight
         );
 
         if (width === clampedWidth && height === clampedHeight) return;
