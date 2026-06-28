@@ -385,6 +385,10 @@ export class CosmereItem<
 
     /* --- Accessors --- */
 
+    public get root(): CosmereItem {
+        return this.parent instanceof CosmereItem ? this.parent.root : this;
+    }
+
     public get isSpecialWeapon(): boolean {
         if (!this.isWeapon()) {
             return false;
@@ -397,7 +401,7 @@ export class CosmereItem<
     }
 
     public get isActivatable(): boolean {
-        if (this.type !== ItemType.Action) return true;
+        if (this.type === ItemType.Action) return true;
 
         const embeddedConfig = (this.constructor as typeof CosmereItem).metadata
             .embeddedConfig;
@@ -562,7 +566,11 @@ export class CosmereItem<
         options: Item.Database.PreUpdateOptions,
         user: User.Implementation,
     ): Promise<boolean | void> {
-        if (this.isWeapon() && this.hasStrike()) {
+        if (
+            this.isWeapon() &&
+            this.hasStrike() &&
+            foundry.utils.hasProperty(changed, 'system.strike.skill')
+        ) {
             const changes = changed as Partial<WeaponItem>;
             const weaponType = changes.system?.type ?? this.system.type;
             if (
