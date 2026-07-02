@@ -682,8 +682,10 @@
 
             .attributes {
                 align-items: flex-start;
-
+                justify-content: center;
+                gap: 7px;
                 .attribute {
+                    flex: 0 0 auto;
                     .container {
                         width: 58px;
                         height: 50px;
@@ -741,6 +743,7 @@
                 }
 
                 .defense {
+                    flex: 0 0 auto;
                     .label {
                         font-family: var(--cosmere-font-normal);
                         font-size: var(--font-size-11);
