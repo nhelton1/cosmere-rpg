@@ -24,6 +24,7 @@ import {
     PowerItem,
     TalentTreeItem,
     ActionItem,
+    EffectsContainerItem,
 } from '@system/documents/item';
 import { CosmereActiveEffect } from '@system/documents/active-effect';
 
@@ -235,6 +236,10 @@ export class CosmereActor<
 
     public get talents(): TalentItem[] {
         return this.items.filter((i) => i.isTalent());
+    }
+
+    public get effectsContainers(): EffectsContainerItem[] {
+        return this.items.filter((i) => i.isEffectsContainer());
     }
 
     public get skillLinkedItems(): CosmereItem[] {
@@ -616,6 +621,21 @@ export class CosmereActor<
     }
 
     /* --- Functions --- */
+
+    /** Returns an embedded item in an actor regardless of how deeply nested it is, if it exists.
+     *
+     * @param itemUuid The UUID of the item you want to get
+     * @returns An Item or null if no item could be found.
+     */
+    public getNestedEmbeddedItemFromUuid(itemUuid: string): Item | null {
+        for (const [, document] of this.traverseEmbeddedDocuments()) {
+            if (document instanceof Item && document.uuid === itemUuid) {
+                return document;
+            }
+        }
+
+        return null;
+    }
 
     public async setMode(modality: string, mode: string) {
         await this.setFlag(SYSTEM_ID, `mode.${modality}`, mode);
@@ -1330,17 +1350,21 @@ export class CosmereActor<
         } as const satisfies EnricherData<SubType>;
     }
 
-    // public *allApplicableEffects() {
-    //     for (const effect of super.allApplicableEffects()) {
-    //         if (
-    //             !(effect.parent instanceof CosmereItem) ||
-    //             !effect.parent.isEquippable() ||
-    //             effect.parent.system.equipped
-    //         ) {
-    //             yield effect;
-    //         }
-    //     }
-    // }
+    public *allApplicableEffects() {
+        for (const effect of this.effects) {
+            yield effect;
+        }
+        if (CONFIG.ActiveEffect.legacyTransferral) return;
+        for (const item of this.items) {
+            for (const effect of item.effects) {
+                if (effect.transfer) yield effect;
+            }
+
+            for (const effect of item.nestedEffects) {
+                if (effect.transfer) yield effect;
+            }
+        }
+    }
 
     /**
      * Utility Function to determine a formula value based on a scalar plot of an attribute value
@@ -1524,7 +1548,7 @@ declare module '@league-of-foundry-developers/foundry-vtt-types/configuration' {
     }
 
     interface ConfiguredActor<SubType extends Actor.SubType> {
-        document: CosmereActor;
+        document: CosmereActor<SubType>;
     }
 
     interface FlagConfig {

@@ -175,9 +175,9 @@ export const DYNAMIC_SECTIONS: Record<string, DynamicItemListSectionGenerator> =
                 new: (parent: CosmereActor) =>
                     CosmereItem.create(
                         {
-                            type: ItemType.Talent,
+                            type: ItemType.Action,
                             name: game.i18n.localize(
-                                'COSMERE.Item.Type.Talent.New',
+                                'COSMERE.Item.Type.Action.New',
                             ),
                             system: {
                                 path: path.system.id,
@@ -251,18 +251,16 @@ const MISC_SECTION: ItemListSection = {
 };
 
 export class ActorActionsListComponent extends ActorItemListComponent {
-    static TEMPLATE = `systems/${SYSTEM_ID}/templates/${TEMPLATES.ACTOR_BASE_ACTIONS_LIST}`;
+    static TEMPLATE = `${TEMPLATES.DIRECTORY}${TEMPLATES.ACTOR_BASE_ACTIONS_LIST}`;
 
     /**
      * NOTE: Unbound methods is the standard for defining actions
      * within ApplicationV2
      */
-    /* eslint-disable @typescript-eslint/unbound-method */
+
     static readonly ACTIONS = {
-        'toggle-section-collapsed': this.onToggleSectionCollapsed,
-        'new-item': this.onNewItem,
+        ...super.ACTIONS,
     };
-    /* eslint-enable @typescript-eslint/unbound-method */
 
     /* --- Context --- */
 
@@ -454,9 +452,13 @@ export class ActorActionsListComponent extends ActorItemListComponent {
                         .closest('.item[data-item-uuid]')
                         .data('item-uuid') as string;
 
-                    // Get item
-                    const item = fromUuidSync(itemUuid) as CosmereItem;
-                    if (!item) return [];
+                    // Get item from loaded actor sheet
+                    const item =
+                        this.application.actor.getNestedEmbeddedItemFromUuid(
+                            itemUuid,
+                        );
+
+                    if (!(item instanceof CosmereItem)) return [];
 
                     const menuItems = [];
 
